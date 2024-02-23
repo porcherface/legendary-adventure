@@ -9,12 +9,15 @@ class AboutView extends View {
         const backgroundColor = 0x00416A;
         super(app,backgroundColor);
         this.app = app;      
-        console.log(this.app.renderer.type);
 
         const cardTexture = Texture.from("card_simple.png");
         const card = new Card(cardTexture);
+        
+        card.x = this.app.screen.width / 2 - card.width / 2; // Center horizontally
+        card.y = this.app.screen.height / 2 - card.height / 2; // Center vertically
         this.addChild(card);
-
+        
+        
     }
 
     override resize(width: number, height: number): void {
