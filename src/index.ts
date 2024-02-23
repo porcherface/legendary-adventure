@@ -1,19 +1,32 @@
-import { Application, Sprite } from 'pixi.js'
+import { Application } from 'pixi.js';
+import SceneManager from './code/sceneManager';
 
 const app = new Application({
-	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
-	resolution: window.devicePixelRatio || 1,
-	autoDensity: true,
-	backgroundColor: 0x6495ed,
-	width: 640,
-	height: 480
+    view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true,
+    backgroundColor: 0x6495ed,
 });
 
-const clampy: Sprite = Sprite.from("clampy.png");
+// Adjust the size to fill the screen
+app.renderer.resize(window.innerWidth, window.innerHeight);
 
-clampy.anchor.set(0.5);
+// Initialize the scene manager
+const sceneManager = new SceneManager(app);
+sceneManager.changeScene('AboutView'); // Starting scene
 
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
+const navButtons = document.querySelectorAll('.nav-button');
 
-app.stage.addChild(clampy);
+navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const sceneName = button.getAttribute('data-scene');
+        if (sceneName) {
+            sceneManager.changeScene(sceneName);
+        }
+    });
+});
+
+window.addEventListener('resize', () => {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+    sceneManager.resize(); // Adjust current scene to new size if needed
+});
