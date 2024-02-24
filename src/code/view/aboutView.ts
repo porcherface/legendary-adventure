@@ -1,4 +1,4 @@
-import { Application, Texture } from 'pixi.js';
+import { Application , Texture} from 'pixi.js';
 import Card from '../sprite/card';
 import View from './view'
 
@@ -10,14 +10,10 @@ class AboutView extends View {
         super(app,backgroundColor);
         this.app = app;      
 
-        const cardTexture = Texture.from("card_simple.png");
-        const card = new Card(cardTexture);
-        
+        const card = new Card(Texture.from("card_simple.png"));        
         card.x = this.app.screen.width / 2 - card.width / 2; // Center horizontally
         card.y = this.app.screen.height / 2 - card.height / 2; // Center vertically
-        this.addChild(card);
-        
-        
+        this.addChild(card); 
     }
 
     override resize(width: number, height: number): void {

@@ -10,6 +10,9 @@ const app = new Application({
 
 // Adjust the size to fill the screen
 app.renderer.resize(window.innerWidth, window.innerHeight);
+app.ticker.add((delta) => {
+    sceneManager.update(delta);
+});
 
 // Initialize the scene manager
 const sceneManager = new SceneManager(app);

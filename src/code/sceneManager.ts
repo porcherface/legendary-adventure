@@ -1,5 +1,6 @@
-import { Application, Container } from 'pixi.js';
+import { Application } from 'pixi.js';
 
+import View from './view/view';
 import AboutView from './view/aboutView';
 import SkillTreeView from './view/skilltreeView';
 import ProjectsView from './view/projectsView';
@@ -10,13 +11,13 @@ import CanvasView from './view/canvasView';
 
 // Define an interface for the scenes mapping
 interface Scenes {
-    [key: string]: new (app: Application) => Container;
+    [key: string]: new (app: Application) => View;
 }
 
 class SceneManager {
     private app: Application;
     private scenes: Scenes;
-    private currentScene?: Container;
+    private currentScene?: View;
 
     constructor(app: Application) {
         this.app = app;
@@ -24,13 +25,18 @@ class SceneManager {
             AboutView: AboutView,
             SkillTreeView: SkillTreeView,
             ProjectsView: ProjectsView,
-            CanvasView:CanvasView,
+            CanvasView: CanvasView,
             ApiView:ApiView,
             // Add other scenes...
         };
     }
 
     changeScene(sceneName: string): void {
+        const htmlContent = document.getElementById('html-content');
+        if (htmlContent) {
+            htmlContent.style.display = 'none';
+        }
+
         if (this.currentScene) {
             this.app.stage.removeChild(this.currentScene);
         }
@@ -42,11 +48,18 @@ class SceneManager {
         }
     }
     
+    update(delta: number): void {
+        // Check if the current scene has an update method and call it
+        if (this.currentScene && typeof (this.currentScene as any).update === 'function') {
+            (this.currentScene as any).update(delta);
+        }
+    }
+
     resize(): void {
         // Resize current scene if necessary
-        //if (this.currentScene && typeof this.currentScene['resize'] === 'function') {
-        //    this.currentScene['resize'](window.innerWidth, window.innerHeight);
-        //}
+        if (this.currentScene && typeof this.currentScene['resize'] === 'function') {
+            this.currentScene['resize'](window.innerWidth, window.innerHeight);
+        }
     }
 }
 

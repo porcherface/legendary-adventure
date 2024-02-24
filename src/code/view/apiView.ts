@@ -1,5 +1,4 @@
-import { Application, Texture } from 'pixi.js';
-import Card from '../sprite/card';
+import { Application } from 'pixi.js';
 import View from './view'
 
 class ApiView extends View {
@@ -11,9 +10,6 @@ class ApiView extends View {
         this.app = app;      
         console.log(this.app.renderer.type);
 
-        const cardTexture = Texture.from("card_simple.png");
-        const card = new Card(cardTexture);
-        this.addChild(card);
 
     }
 

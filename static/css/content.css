@@ -1,0 +1,14 @@
+#html-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 180px; /* Adjust based on your layout */
+    left: 320px; /* Adjust to not overlap with the navbar */
+    width: 60%; /* Adjust based on your content */
+    height: auto; /* Adjust or set to a fixed height */
+    padding: 20px;
+    background-color: #fff; /* Or any color that fits your design */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 10; /* Ensure it's above the PixiJS canvas */
+    overflow: auto; /* In case the content overflows */
+}

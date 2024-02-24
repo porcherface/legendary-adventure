@@ -1,5 +1,4 @@
-import { Application, Texture } from 'pixi.js';
-import Card from '../sprite/card';
+import { Application } from 'pixi.js';
 import View from './view'
 
 class CanvasView extends View {
@@ -10,13 +9,29 @@ class CanvasView extends View {
         super(app,backgroundColor);
         this.app = app;      
         console.log(this.app.renderer.type);
-
-        const cardTexture = Texture.from("card_simple.png");
-        const card = new Card(cardTexture);
-        this.addChild(card);
-
+        this.showHtmlContent();
     }
 
+    async showHtmlContent() {
+        try {
+            const response = await fetch('html/canvas.html');
+            const htmlString = await response.text();
+            
+            const htmlContent = document.getElementById('html-content');
+            if (htmlContent) {
+                htmlContent.innerHTML = htmlString; 
+                htmlContent.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Failed to load HTML content:', error);
+        }
+    }
+    hideHtmlContent() {
+        const htmlContent = document.getElementById('html-content');
+        if (htmlContent) {
+            htmlContent.style.display = 'none'; // Hide the div
+        }
+    }
     override resize(width: number, height: number): void {
         width = width;
         height = height;

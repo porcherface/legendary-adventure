@@ -11,6 +11,12 @@ class View extends Container{
         background.endFill();
         this.addChildAt(background, 0);
     }
+
+    update(delta: number): void {
+        
+        console.log(delta);
+    }
+
     resize(width: number, height: number): void {
         const background = this.getChildAt(0) as Graphics;
         background.width = width;
