@@ -1,8 +1,13 @@
 
 export class PhysicsEngine {
-    repulsionConstant: number = 1; 
-    springConstant: number = 50; // Spring stiffness
-    springRestLength: number = 0;
+    
+
+    /** PHYSICAL ___CONSTANTS____ **/
+    repulsionConstant: number = -0.1; 
+    springConstant: number = -0.1; // Spring stiffness
+    springRestLength: number = 100;
+    dampeningConstant: number = 0.01;
+
     // Function to update sprite position and velocity
     updateSprite(sprite: any, deltaTime: number) {
         // Apply gravity and update position as before
@@ -11,23 +16,43 @@ export class PhysicsEngine {
             sprite.y += sprite.velocity.y * deltaTime;
         }
     }
-
-    // Function to handle interactions with ranged forces
-    handleRangedInteractions(sprites: any[], deltaTime: number) {
+    handleRangedInteractions(sprites: any[], deltaTime: number, linkedNodes: [any, any][]) {
         sprites.forEach((spriteA, index) => {
             for (let j = index + 1; j < sprites.length; j++) {
                 const spriteB = sprites[j];
 
-                // Calculate the force between spriteA and spriteB
-                const force = this.calculateSpringForce(spriteA, spriteB, this.springRestLength)
-                + this.calculateRepulsiveForce(spriteA, spriteB);
+                // Initialize total force to 0
+                let force = 0;
 
-                // Apply the force to both sprites
+                // Check if the pair is linked (i.e., parent-child relationship)
+                const isLinked = linkedNodes.some(([parent, child]) => 
+                    (spriteA === parent && spriteB === child) || (spriteA === child && spriteB === parent));
+
+                // Apply spring force if the sprites are linked
+                if (isLinked) {
+                    force += this.calculateSpringForce(spriteA, spriteB, this.springRestLength);
+                }
+
+                // Apply repulsive force for all pairs
+                force += this.calculateRepulsiveForce(spriteA, spriteB);
+
+                if (index == 0) {
+                    force = 0
+                }
+
+                // Apply the total force to both sprites
                 this.applyForce(spriteA, spriteB, force, deltaTime);
+                //console.log("force on "+index+": "+force);
             }
+
+            const dampingForce = this.calculateDampingForce(spriteA);
+            spriteA.velocity.x += dampingForce.x * deltaTime;
+            spriteA.velocity.y += dampingForce.y * deltaTime;
+            
+            /* viscosity f = - c*v */
+            this.updateSprite(spriteA, deltaTime);
         });
     }
-
     // Calculate repulsive force (for non-connected objects)
     calculateRepulsiveForce(spriteA: any, spriteB: any): number {
         const distanceX = spriteB.x - spriteA.x;
@@ -56,7 +81,13 @@ export class PhysicsEngine {
 
         return force;
     }
+    calculateDampingForce(sprite: any): { x: number; y: number } {
+        // Damping force is proportional to the negative of velocity
+        const fx = -this.dampeningConstant * sprite.velocity.x;
+        const fy = -this.dampeningConstant * sprite.velocity.y;
 
+        return { x: fx, y: fy };
+    }
     // Apply the force to the objects, updating their velocities
     applyForce(spriteA: any, spriteB: any, force: number, deltaTime: number) {
         const distanceX = spriteB.x - spriteA.x;

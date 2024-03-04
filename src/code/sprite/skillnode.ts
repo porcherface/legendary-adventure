@@ -5,10 +5,12 @@ class SkillNode extends Sprite {
     nodeName: string;
     lineGraphics: Graphics; // Dedicated Graphics object for lines
     velocity: { x: number; y: number }; // Velocity property
-
+    mass: number;
 
     constructor(name: string, x: number, y: number) {
         super();
+
+        this.mass = 1; // Set a default mass
         this.x = x;
         this.y = y;
         this.nodeName = name || "Unnamed Node";
@@ -18,7 +20,7 @@ class SkillNode extends Sprite {
         this.addChild(this.lineGraphics);
 
         // Make node interactive
-        this.interactive = true;
+        this.eventMode = 'dynamic'; // or 'dynamic', 'static', etc., based on your use case
         //this.buttonMode = true;
         this.setupInteractions();
         this.velocity = { x: 0, y: 0 }; // Start with no velocity

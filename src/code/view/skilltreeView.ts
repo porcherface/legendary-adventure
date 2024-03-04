@@ -1,6 +1,7 @@
 import { Application } from 'pixi.js';
 import View from './view';
 import SkillNode from "../sprite/skillnode";
+import { PhysicsEngine } from "../engine/physicsengine";
 
 interface Skill {
     id: string;
@@ -15,12 +16,15 @@ class SkillTreeView extends View {
     private skillNodes: { [id: string]: SkillNode }; // Declare skillNodes here
     private interactiveSprites: SkillNode[]; // Ensure this is declared
     private linkedNodes: [SkillNode, SkillNode][]; // Ensure this is declared and initialized
+    private physicsEngine: PhysicsEngine; // Declare physicsEngine here
 
     constructor(app: Application) {
         const backgroundColor = 0x2F4F4F;
+
         super(app, backgroundColor);
         this.app = app;
         console.log(this.app.renderer.type);
+        this.physicsEngine = new PhysicsEngine(); 
         this.skillNodes = {}; // Initialize skillNodes as an empty object
         this.loadSkills();
         this.interactiveSprites = []; // Initialize the array here
@@ -60,46 +64,16 @@ class SkillTreeView extends View {
     }
 
     override update(delta: number) {
-    const k = 0.1; // Spring constant - adjust based on desired "stiffness"
-    const equilibriumDistance = 100; // Desired distance between parent and child nodes
-
-    this.linkedNodes.forEach(([parent, child]) => {
-            // Calculate displacement from equilibrium position
-            const dx = child.x - parent.x;
-            const dy = child.y - parent.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const displacement = distance - equilibriumDistance;
-
-            // Normalize displacement vector for direction
-            const nx = dx / distance;
-            const ny = dy / distance;
-
-            // Calculate spring force based on displacement
-            const fx = -k * displacement * nx;
-            const fy = -k * displacement * ny;
-
-            // Assuming mass = 1, acceleration = force
-            // Update velocities based on acceleration and delta time
-            child.velocity.x += fx * delta;
-            child.velocity.y += fy * delta;
-
-            // Optionally, add some damping to stabilize the system
-            const damping = 0.98; // Damping factor close to but less than 1
-            child.velocity.x *= damping;
-            child.velocity.y *= damping;
-        });
-
-        // Update positions based on velocities
-        this.interactiveSprites.forEach(node => {
-            node.x += node.velocity.x * delta;
-            node.y += node.velocity.y * delta;
-        });
-
+        this.physicsEngine.handleRangedInteractions(this.interactiveSprites, delta, this.linkedNodes);
+    
         // Redraw lines to reflect updated positions
         Object.values(this.skillNodes).forEach(node => {
             node.drawLinesToChildren();
             this.addChild(node); // Ensure nodes are rendered above lines
+
         });
+
+
     }
     override resize(width: number, height: number): void {
         width = width;
