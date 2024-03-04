@@ -10,9 +10,10 @@ class AboutView extends View {
         super(app,backgroundColor);
         this.app = app;      
 
+        // -1* ensures this is not shown for now
         const card = new Card(Texture.from("card_simple.png"));        
-        card.x = this.app.screen.width / 2 - card.width / 2; // Center horizontally
-        card.y = this.app.screen.height / 2 - card.height / 2; // Center vertically
+        card.x = -1 * this.app.screen.width / 2 - card.width / 2; // Center horizontally
+        card.y = -1 * this.app.screen.height / 2 - card.height / 2; // Center vertically
         this.addChild(card); 
     }
 

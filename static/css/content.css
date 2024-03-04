@@ -2,9 +2,9 @@
     display: none; /* Hidden by default */
     position: absolute;
     top: 180px; /* Adjust based on your layout */
-    left: 320px; /* Adjust to not overlap with the navbar */
-    width: 60%; /* Adjust based on your content */
-    height: auto; /* Adjust or set to a fixed height */
+    left: 320px; 
+    width: 60%;
+    height: auto; 
     padding: 20px;
     background-color: #fff; /* Or any color that fits your design */
     border-radius: 10px;

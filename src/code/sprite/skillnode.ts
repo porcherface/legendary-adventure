@@ -1,9 +1,11 @@
-import { Container, Text, TextStyle, Graphics } from 'pixi.js';
+import { Sprite, Text, TextStyle, Graphics } from 'pixi.js';
 
-class SkillNode extends Container {
+class SkillNode extends Sprite {
     childrenNodes: SkillNode[] = []; 
     nodeName: string;
     lineGraphics: Graphics; // Dedicated Graphics object for lines
+    velocity: { x: number; y: number }; // Velocity property
+
 
     constructor(name: string, x: number, y: number) {
         super();
@@ -15,6 +17,12 @@ class SkillNode extends Container {
         this.lineGraphics = new Graphics();
         this.addChild(this.lineGraphics);
 
+        // Make node interactive
+        this.interactive = true;
+        //this.buttonMode = true;
+        this.setupInteractions();
+        this.velocity = { x: 0, y: 0 }; // Start with no velocity
+
     }
 
     addChildNode(node: SkillNode) {
@@ -22,7 +30,7 @@ class SkillNode extends Container {
     }
 
     drawLinesToChildren() {
-        //this.lineGraphics.clear(); // Clear the existing lines on the dedicated Graphics object
+        this.lineGraphics.clear(); // Clear the existing lines on the dedicated Graphics object
         this.lineGraphics.lineStyle(2, 0xffffff, 1);
 
         this.childrenNodes.forEach(child => {
@@ -59,6 +67,31 @@ class SkillNode extends Container {
         });
         return textStyle;
     }
+
+    setupInteractions() {
+    this.on('pointerover', this.onMouseOver);
+    this.on('pointerout', this.onMouseOut);
+    this.on('click', this.onClick);
+    }
+
+    onMouseOver = () => {
+        // Example: change the node's scale or color on hover
+        this.scale.set(1.2); // Enlarge the node
+        this.lineGraphics.tint = 0xff0000; // Change line color to red
+    }
+
+    onMouseOut = () => {
+        // Restore the node's appearance
+        this.scale.set(1.0); // Reset scale
+        this.lineGraphics.tint = 0xffffff; // Reset line color to white
+    }
+
+    onClick = () => {
+        // Implement click behavior, like displaying more information
+        console.log(`Clicked on node: ${this.nodeName}`);
+        // You can also toggle visibility of child nodes or other elements here
+}
+
 }
 
 export default SkillNode;

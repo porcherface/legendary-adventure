@@ -1,5 +1,8 @@
 import { Application } from 'pixi.js';
 
+import AudioEngine from "./engine/audioengine";
+
+
 import View from './view/view';
 import AboutView from './view/aboutView';
 import SkillTreeView from './view/skilltreeView';
@@ -18,6 +21,8 @@ class SceneManager {
     private app: Application;
     private scenes: Scenes;
     private currentScene?: View;
+    private audioEngine: AudioEngine;
+
 
     constructor(app: Application) {
         this.app = app;
@@ -27,8 +32,10 @@ class SceneManager {
             ProjectsView: ProjectsView,
             CanvasView: CanvasView,
             ApiView:ApiView,
-            // Add other scenes...
         };
+        this.audioEngine = new AudioEngine();
+        this.audioEngine.loadTrack('backgroundMusic', 'audio/Star_Wars_Visions_Village_Bride.mp3');
+        this.audioEngine.playTrack('backgroundMusic', true); 
     }
 
     changeScene(sceneName: string): void {
